@@ -1,7 +1,7 @@
 import os
 import shutil
 
-working_dir = "/home/hashotocodes/Downloads"
+working_dir = input("Enter the full path of the folder you want to organize: ").strip()
 os.chdir(working_dir)
 os.makedirs(os.path.join(working_dir, "files"), exist_ok=True)
 os.makedirs(os.path.join(working_dir, "directories"), exist_ok=True)
