@@ -30,59 +30,62 @@ for file in os.listdir(working_dir):
 
 
 os.chdir(files_dir)
-os.makedirs(os.path.join(files_dir, "images"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "music"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "documents"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "scripts"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "archives"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "packages"), exist_ok=True)
-os.makedirs(os.path.join(files_dir, "others"), exist_ok=True)
 
 file_types = {
 
     "images": [".jpg", ".jpeg", ".png", ".gif"],
     "music": [".mp3", ".wav", ".aac"],
     "documents": [".pdf", ".docx", ".txt"],
-    "scripts": [".py", ".js", ".sh"],
-    "archives" : [".zip", ".tar.gz", ".tar.xz"],
+    "scripts": [".py", ".js", ".sh", ".php"],
+    "archives" : [".zip", ".tar.gz", ".tar.xz", ".xz", ".gz"],
     "packages": [".rpm", ".deb", ".exe", ".msi"],
-    "others": [".html"]
+    "others": []
 }
 
-image_dir = os.path.join(files_dir, "images")
-music_dir = os.path.join(files_dir, "music")
-document_dir = os.path.join(files_dir, "documents")
-script_dir = os.path.join(files_dir, "scripts")
-archive_dir = os.path.join(files_dir, "archives")
-package_dir = os.path.join(files_dir, "packages")
-other_dir = os.path.join(files_dir, "others")
+for category in file_types:
+    os.makedirs(os.path.join(files_dir, category), exist_ok=True)
 
-working_extension = []
-
-for f in os.listdir(files_dir):
-    filename, fileextension = os.path.splitext(f)
-    for ext in file_types.items():
-        for x in ext[1]:
-            if fileextension == x:
-                if image_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, image_dir)
-                if music_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, music_dir)
-                if document_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, document_dir)
-                if script_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, script_dir)
-                if archive_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, archive_dir)
-                if other_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, other_dir)
-                if package_dir == os.path.join(files_dir, ext[0]):
-                    shutil.move(f, package_dir)
-
-
- 
-   
+for f in list(os.listdir(files_dir)):
+    path = os.path.join(files_dir, f)
     
+    if os.path.isfile(path):
+        _,ext = os.path.splitext(f)
+        moved = False
+
+        for category, extensions in file_types.items():
+            if ext.lower() in extensions:
+                dest_folder = os.path.join(files_dir, category)
+                dest_path = os.path.join(dest_folder, f)
+
+                if os.path.exists(dest_path):
+                    base, extension = os.path.splitext(f)
+                    counter = 1
+
+                    while os.path.exists(dest_path):
+                        new_name = f"{base}_{counter}{extension}"
+                        dest_path = os.path.join(dest_folder, new_name)
+                        counter += 1
+
+                shutil.move(path, dest_path)
+                moved = True
+                break
+            
+        if not moved:
+            dest_folder = os.path.join(files_dir, "others")
+            dest_path = os.path.join(dest_folder, f)
+
+            if os.path.exists(dest_path):
+                base, extension = os.path.splitext(f)
+                counter = 1
+                                    
+                while os.path.exists(dest_path):
+                    new_name = f"{base}_{counter}{extension}"
+                    dest_path = os.path.join(dest_folder, new_name)
+                    counter +=1
+            shutil.move(path, dest_path)
+                
+
+print("File Organized Successfully")
 
 
 
